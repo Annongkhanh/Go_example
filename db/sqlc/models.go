@@ -54,18 +54,16 @@ func (ns NullCurrency) Value() (driver.Value, error) {
 }
 
 type Account struct {
-	ID          int64
-	Owner       string
-	Balance     sql.NullInt64
-	Currency    Currency
-	CreatedAt   time.Time
-	CountryCode sql.NullInt32
+	ID        int64
+	Owner     string
+	Balance   int64
+	Currency  Currency
+	CreatedAt time.Time
 }
 
 type Entry struct {
-	ID          int64
-	CountryCode sql.NullInt32
-	AccountID   int64
+	ID        int64
+	AccountID int64
 	// can be negative or positive
 	Amount    int64
 	CreatedAt time.Time
@@ -73,7 +71,6 @@ type Entry struct {
 
 type Transfer struct {
 	ID            int64
-	CountryCode   sql.NullInt32
 	FromAccountID int64
 	ToAccountID   int64
 	// must be positive

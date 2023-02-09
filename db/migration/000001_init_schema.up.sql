@@ -6,15 +6,13 @@ CREATE TYPE "Currency" AS ENUM (
 CREATE TABLE "accounts" (
   "id" bigserial PRIMARY KEY,
   "owner" varchar NOT NULL,
-  "balance" bigint,
+  "balance" bigint NOT NULL,
   "currency" "Currency" NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "country_code" int
+  "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "entries" (
   "id" bigserial PRIMARY KEY,
-  "country_code" int,
   "account_id" bigint NOT NULL,
   "amount" bigint NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
@@ -22,7 +20,6 @@ CREATE TABLE "entries" (
 
 CREATE TABLE "transfers" (
   "id" bigserial PRIMARY KEY,
-  "country_code" int,
   "from_account_id" bigint NOT NULL,
   "to_account_id" bigint NOT NULL,
   "amount" bigint NOT NULL,
