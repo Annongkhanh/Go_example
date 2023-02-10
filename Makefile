@@ -18,4 +18,6 @@ init:
 	make migrateup
 removeall:
 	sudo docker rm -f $(sudo docker ps -aq)
-.PHONY: createdb dropdb postgres migrateup migratedown pull sqlc
+test:
+	go test -v -cover ./...
+.PHONY: createdb dropdb postgres migrateup migratedown pull sqlc test
