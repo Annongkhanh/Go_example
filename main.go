@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"github.com/Annongkhanh/Go_example/api"
+	_ "github.com/lib/pq"
 	db "github.com/Annongkhanh/Go_example/db/sqlc"
 )
 

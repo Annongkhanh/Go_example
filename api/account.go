@@ -1,7 +1,9 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
+
 	db "github.com/Annongkhanh/Go_example/db/sqlc"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +12,7 @@ import (
 
 type createAccountRequest struct{
 	Owner    string `json:"owner" binding:"required"`
-	Currency int64 `json:"currency" binding:"required,oneof=USD EUR"`
+	Currency string `json:"currency" binding:"required,oneof=USD EUR"`
 }
 
 func (server *Server) createAccount (ctx *gin.Context ){
@@ -27,6 +29,32 @@ func (server *Server) createAccount (ctx *gin.Context ){
 
 	account, err := server.store.CreateAccount(ctx, arg)
 	if err != nil{
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, account)
+}
+
+
+
+type getAccountRequest struct{
+	id    int64 `uri:"id" binding:"required,min=1"`
+}
+
+func (server *Server) getAccount (ctx *gin.Context ){
+	var req getAccountRequest
+	if err := ctx.ShouldBindUri(&req); err != nil{
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+	}
+
+	account, err := server.store.GetAccount(ctx, req.id)
+	if err != nil{
+		if err == sql.ErrNoRows{
+			ctx.JSON(http.StatusNotFound, err)
+			return
+		}
+
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
