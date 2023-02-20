@@ -10,15 +10,14 @@ import (
 	_ "github.com/lib/pq"
 )
 
-
 func main() {
 	config, err := util.LoadConfig(".")
-	if err != nil{
+	if err != nil {
 		log.Fatal("Can not load congif: ", err)
 	}
-	conn, err := sql.Open(config.DBDriver, config.DBSource) 
+	conn, err := sql.Open(config.DBDriver, config.DBSource)
 
-	if (err != nil){
+	if err != nil {
 		log.Fatal("Can not connect to database: ", err)
 	}
 
@@ -26,7 +25,7 @@ func main() {
 	server := api.NewServer(store)
 
 	err = server.Start(config.ServerAddress)
-	if (err != nil){
+	if err != nil {
 		log.Fatal("Can not start server: ", err)
 	}
 

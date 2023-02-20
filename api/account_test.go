@@ -16,82 +16,79 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetAccountAPI(t *testing.T){
+func TestGetAccountAPI(t *testing.T) {
 
-	account :=  randomAccount()
+	account := randomAccount()
 
-	testCases := []struct{
-		name string
-		accountID int64
-		buildStubs func(store *mockdb.MockStore)
+	testCases := []struct {
+		name          string
+		accountID     int64
+		buildStubs    func(store *mockdb.MockStore)
 		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
 		{
-			name: "OK",
+			name:      "OK",
 			accountID: account.ID,
-			buildStubs: func(store *mockdb.MockStore){
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account.ID)).Times(1).Return(account, nil)
 			},
-			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder){
+			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
-				requireBodyMatchAccount(t, recorder.Body,account)
+				requireBodyMatchAccount(t, recorder.Body, account)
 			},
-
-
 		},
 	}
 
-	for i := range testCases{
+	for i := range testCases {
 		tc := testCases[i]
 
 		t.Run(tc.name, func(t *testing.T) {
-			
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
 
-	store := mockdb.NewMockStore(ctrl)
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
 
-	tc.buildStubs(store)
- 
+			store := mockdb.NewMockStore(ctrl)
 
-	//start test server and send request
-	
-	server := NewServer(store)
+			tc.buildStubs(store)
 
-	recorder := httptest.NewRecorder()
+			//start test server and send request
 
-	uri := fmt.Sprintf("/accounts/%d", account.ID)
+			server := NewServer(store)
 
-	request, err :=  http.NewRequest(http.MethodGet, uri, nil)
+			recorder := httptest.NewRecorder()
 
-	require.NoError(t, err)
+			uri := fmt.Sprintf("/accounts/%d", account.ID)
 
-		server.router.ServeHTTP(recorder, request)
+			request, err := http.NewRequest(http.MethodGet, uri, nil)
+
+			require.NoError(t, err)
+
+			server.router.ServeHTTP(recorder, request)
 
 			tc.checkResponse(t, recorder)
 
-		})		
-			
+		})
+
 	}
 
 }
 
-func randomAccount() db.Account{
+func randomAccount() db.Account {
 	return db.Account{
-		ID: util.RandomInt(1000, 1),
-		Owner: util.RandomOwner(),
-		Balance: util.RandomMoney(),
+		ID:       util.RandomInt(1000, 1),
+		Owner:    util.RandomOwner(),
+		Balance:  util.RandomMoney(),
 		Currency: db.Currency(util.RandomCurrency()),
 	}
 }
 
-func requireBodyMatchAccount(t *testing.T,body *bytes.Buffer, account db.Account){
+func requireBodyMatchAccount(t *testing.T, body *bytes.Buffer, account db.Account) {
 	data, err := io.ReadAll(body)
 	require.NoError(t, err)
 
 	var gotAccount db.Account
 	//unmarshal response body
-	err = json.Unmarshal(data, &gotAccount) 
+	err = json.Unmarshal(data, &gotAccount)
 	require.NoError(t, err)
 
 	require.Equal(t, account, gotAccount)
