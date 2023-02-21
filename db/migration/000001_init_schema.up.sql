@@ -11,6 +11,7 @@ CREATE TABLE "accounts" (
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
+
 CREATE TABLE "entries" (
   "id" bigserial PRIMARY KEY,
   "account_id" bigint NOT NULL,
@@ -45,3 +46,4 @@ ALTER TABLE "entries" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id"
 ALTER TABLE "transfers" ADD FOREIGN KEY ("from_account_id") REFERENCES "accounts" ("id");
 
 ALTER TABLE "transfers" ADD FOREIGN KEY ("to_account_id") REFERENCES "accounts" ("id");
+

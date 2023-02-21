@@ -64,7 +64,7 @@ func TestGetAccountAPI(t *testing.T) {
 			name:      "Invalid ID",
 			accountID: 0,
 			buildStubs: func(store *mockdb.MockStore) {
-				store.EXPECT().GetAccount(gomock.Any(), gomock.Any()).Times(1)
+				store.EXPECT().GetAccount(gomock.Any(), gomock.Any()).Times(0)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
@@ -101,11 +101,11 @@ func TestGetAccountAPI(t *testing.T) {
 			tc.checkResponse(t, recorder)
 
 			respDump, err := httputil.DumpResponse(recorder.Result(), true)
-    if err != nil {
-        log.Fatal(err)
-    }
+			if err != nil {
+				log.Fatal(err)
+			}
 
-    fmt.Printf("RESPONSE:\n%s", string(respDump))
+			fmt.Printf("RESPONSE:\n%s", string(respDump))
 
 		})
 
