@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"net/http/httputil"
 	"testing"
 
 	mockdb "github.com/Annongkhanh/Go_example/db/mock"
@@ -97,6 +99,13 @@ func TestGetAccountAPI(t *testing.T) {
 			server.router.ServeHTTP(recorder, request)
 
 			tc.checkResponse(t, recorder)
+
+			respDump, err := httputil.DumpResponse(recorder.Result(), true)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Printf("RESPONSE:\n%s", string(respDump))
 
 		})
 
