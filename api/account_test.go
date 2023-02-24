@@ -84,7 +84,9 @@ func TestGetAccountAPI(t *testing.T) {
 
 			//start test server and send request
 
-			server := NewServer(store)
+			server, err := NewServer(store)
+
+			require.NoError(t, err)
 
 			recorder := httptest.NewRecorder()
 
@@ -178,7 +180,8 @@ func TestCreateAccountAPI(t *testing.T) {
 
 			//start test server and send request
 
-			server := NewServer(store)
+			server, err := NewServer(store)
+			require.NoError(t, err)
 
 			recorder := httptest.NewRecorder()
 

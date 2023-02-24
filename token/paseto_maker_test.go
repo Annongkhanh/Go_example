@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPasetoMaker(t *testing.T){
+func TestPasetoMaker(t *testing.T) {
 	symmetricKey := util.RandomString(32)
-
+	
 	pasetoMaker, err := NewPasetoMaker(symmetricKey)
 
 	require.NoError(t, err)
@@ -33,7 +33,6 @@ func TestPasetoMaker(t *testing.T){
 	require.NotZero(t, payload.ID)
 
 }
-
 
 func TestExpiredPasetoToken(t *testing.T) {
 	pasetoMaker, err := NewPasetoMaker(util.RandomString(32))

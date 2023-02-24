@@ -30,7 +30,7 @@ func TestGetUserAPI(t *testing.T) {
 		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
 		{
-		name:     "OK",
+			name:     "OK",
 			username: user.Username,
 			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetUser(gomock.Any(), gomock.Eq(
@@ -40,7 +40,7 @@ func TestGetUserAPI(t *testing.T) {
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusOK, recorder.Code)
 				requireBodyMatchUser(t, recorder.Body, user, password)
-			},	
+			},
 		},
 		{
 			name:     "Not found",
@@ -52,7 +52,7 @@ func TestGetUserAPI(t *testing.T) {
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusNotFound, recorder.Code)
-			},	
+			},
 		},
 		{
 			name:     "Internal server error",
@@ -64,7 +64,7 @@ func TestGetUserAPI(t *testing.T) {
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusInternalServerError, recorder.Code)
-			},	
+			},
 		},
 		{
 			name:     "Invalid username",
@@ -76,7 +76,7 @@ func TestGetUserAPI(t *testing.T) {
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusBadRequest, recorder.Code)
-			},	
+			},
 		},
 	}
 
@@ -94,7 +94,8 @@ func TestGetUserAPI(t *testing.T) {
 
 			//start test server and send request
 
-			server := NewServer(store)
+			server, err := NewServer(store)
+			require.NoError(t, err)
 
 			recorder := httptest.NewRecorder()
 
@@ -148,5 +149,3 @@ func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User, passwo
 
 	require.Equal(t, user, gotUser)
 }
-
-
