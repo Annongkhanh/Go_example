@@ -10,7 +10,7 @@ import (
 
 func TestPasetoMaker(t *testing.T) {
 	symmetricKey := util.RandomString(32)
-	
+
 	pasetoMaker, err := NewPasetoMaker(symmetricKey)
 
 	require.NoError(t, err)

@@ -60,7 +60,7 @@ func (server *Server) validAccount(accountID int64, currency string, ctx *gin.Co
 	if account.Currency == db.Currency(currency) {
 		return true
 	} else {
-		err := fmt.Errorf("Account [%d] currency mismatch: %s vs %s", account.ID, account.Currency, currency)
+		err := fmt.Errorf("account [%d] currency mismatch: %s vs %s", account.ID, account.Currency, currency)
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return false
 

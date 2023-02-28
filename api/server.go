@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 
 	db "github.com/Annongkhanh/Go_example/db/sqlc"
 	"github.com/Annongkhanh/Go_example/token"
@@ -14,31 +13,35 @@ import (
 )
 
 type Server struct {
-	store  db.Store
-	router *gin.Engine
+	store      db.Store
+	router     *gin.Engine
 	tokenMaker token.Maker
+	config     util.Config
 }
 
-func NewServer(store db.Store) (*Server, error) {
+func NewServer(config util.Config, store db.Store) (*Server, error) {
 
-	config, err := util.LoadConfig("..")
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
-		log.Fatal("Can not load key config: ", err)
-	}
-
-	tokenMaker, err := token.NewPasetoMaker(config.SymmetricKey)
-	if err != nil{
 		return nil, fmt.Errorf("can not create token maker: %w", err)
 	}
 
-	server := &Server{store: store, tokenMaker: tokenMaker}
-	router := gin.Default()
-	server.router = router
-
+	server := &Server{store: store, tokenMaker: tokenMaker, config: config}
+	server.setUpRouter()
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
+
+	return server, nil
+}
+
+func (server *Server) Start(address string) error {
+	return server.router.Run(address)
+}
+
+func (server *Server) setUpRouter() {
+	router := gin.Default()
 
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
@@ -50,14 +53,11 @@ func NewServer(store db.Store) (*Server, error) {
 
 	router.POST("/users", server.createUser)
 	router.GET("/users/:username", server.getUser)
+	router.POST("/users/login", server.loginUser)
 
-	return server, nil
+	server.router = router
+
 }
-
-func (server *Server) Start(address string) error {
-	return server.router.Run(address)
-}
-
 func errorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}
 }
