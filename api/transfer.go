@@ -2,10 +2,12 @@ package api
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
 	db "github.com/Annongkhanh/Go_example/db/sqlc"
+	"github.com/Annongkhanh/Go_example/token"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,48 +23,59 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 	}
+	
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
 	arg := db.TransferTxParams{
 		FromAccountID: req.FromAccountID,
 		ToAccountID:   req.ToAccountID,
 		Amount:        req.Amount,
 	}
-
+	if arg.FromAccountID == arg.ToAccountID {
+		error := errors.New("can not transfer money to the same account")
+		ctx.JSON(http.StatusBadRequest, errorResponse(error))
+	}
 	result, err := server.store.TransferTx(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	if !server.validAccount(req.FromAccountID, req.Currency, ctx) {
-		return
+	fromAccount, valid := server.validAccount(req.FromAccountID, req.Currency, ctx)
+	if !valid {
+		return 
 	}
+	if authPayload.Username != fromAccount.Owner {
+		err := errors.New("from account is not belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	}
+	_ , valid = server.validAccount(req.ToAccountID, req.Currency, ctx)
 
-	if !server.validAccount(req.ToAccountID, req.Currency, ctx) {
+	if !valid {
 		return
 	}
 
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (server *Server) validAccount(accountID int64, currency string, ctx *gin.Context) bool {
+func (server *Server) validAccount(accountID int64, currency string, ctx *gin.Context) (db.Account,bool) {
 	account, err := server.store.GetAccount(ctx, accountID)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, err)
-			return false
+			return account, false
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return false
+		return account, false
 	}
 
 	if account.Currency == db.Currency(currency) {
-		return true
+		return account, true
 	} else {
 		err := fmt.Errorf("account [%d] currency mismatch: %s vs %s", account.ID, account.Currency, currency)
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return false
+		return account, false
 
 	}
 
