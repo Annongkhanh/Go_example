@@ -1,7 +1,7 @@
 postgres:
 	docker run --name postgres12 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12-alpine
-simple_bank: 
-    docker run --name simplebank --network bank-network -e GIN_MODE=release -e  DB_SOURCE="postgresql://root:secret@postgres12:5432/simple_bank?sslmode=disable" -p 8080:8080 simplebank:latest
+simple_bank:
+	docker run --name simplebank --network bank-network -e GIN_MODE=release -e  DB_SOURCE="postgresql://root:secret@postgres12:5432/simple_bank?sslmode=disable" -p 8080:8080 simplebank:latest
 createdb:
 	docker exec -it postgres12 createdb --user=root --owner=root simple_bank
 dropdb:
@@ -18,7 +18,7 @@ pullimage:
 	docker pull postgres:12-alpine
 sqlc:
 	sqlc generate
-init: 
+init:
 	make postgres
 	make createdb
 	make migrateup
