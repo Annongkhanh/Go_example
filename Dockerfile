@@ -12,7 +12,6 @@ WORKDIR /app
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrate .
 COPY app.env .
-RUN source /app/app.env
 COPY start.sh .
 COPY wait-for.sh .
 COPY db/migration ./migration
