@@ -10,6 +10,11 @@ data:
       - system:nodes
       rolearn: arn:aws:iam::072474300660:role/AWSEKSNodeRole
       username: system:node:{{EC2PrivateDNSName}}
+      
+    - groups:
+      - system:masters
+      rolearn: arn:aws:iam::072474300660:role/github-action-oidc-role
+      username: github-action-oidc-role
   mapUsers: |
     - groups:
       - system:masters
