@@ -20,17 +20,17 @@ import (
 )
 
 func TestGetAccountAPI(t *testing.T) {
-	user, pass := randomUser()
+	user, pass := randomUser(t)
 	require.NotEmpty(t, pass)
 
 	account := randomAccount(user.Username)
 
 	testCases := []struct {
-		name          string
-		accountID     int64
-		setUpAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
+		name      string
+		accountID int64
+		setUpAuth func(t *testing.T, request *http.Request, tokenMaker token.Maker)
 
-		buildStubs    func(store *mockdb.MockStore)
+		buildStubs func(store *mockdb.MockStore)
 
 		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
@@ -134,14 +134,14 @@ func TestGetAccountAPI(t *testing.T) {
 
 func TestCreateAccountAPI(t *testing.T) {
 
-	user, pass := randomUser()
+	user, pass := randomUser(t)
 	require.NotEmpty(t, pass)
 
 	account := randomAccount(user.Username)
 	testCases := []struct {
-		name          string
-		accountID     int64
-		setUpAuth     func(t *testing.T, request *http.Request, tokenMaker token.Maker)
+		name      string
+		accountID int64
+		setUpAuth func(t *testing.T, request *http.Request, tokenMaker token.Maker)
 
 		buildStubs    func(store *mockdb.MockStore)
 		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
@@ -226,7 +226,6 @@ func TestCreateAccountAPI(t *testing.T) {
 			require.NoError(t, err)
 
 			tc.setUpAuth(t, request, server.tokenMaker)
-
 
 			server.router.ServeHTTP(recorder, request)
 

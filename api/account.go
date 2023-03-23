@@ -67,9 +67,9 @@ func (server *Server) getAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	if authPayload.Username != account.Owner{
+	if authPayload.Username != account.Owner {
 		err := errors.New("account does not belong to the authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 	}
@@ -78,8 +78,8 @@ func (server *Server) getAccount(ctx *gin.Context) {
 
 type listAccountsRequest struct {
 	Owner    string `json:"owner" binding:"required"`
-	PageID   int32 `form:"page_id" binding:"required,min=1"`
-	PageSize int32 `form:"page_size" binding:"required,min=5,max=10"`
+	PageID   int32  `form:"page_id" binding:"required,min=1"`
+	PageSize int32  `form:"page_size" binding:"required,min=5,max=10"`
 }
 
 func (server *Server) listAccounts(ctx *gin.Context) {
@@ -91,7 +91,7 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
 	arg := db.ListAccountsParams{
-		Owner: authPayload.Username,
+		Owner:  authPayload.Username,
 		Limit:  req.PageSize,
 		Offset: (req.PageID - 1) * req.PageSize,
 	}
@@ -134,7 +134,7 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 // 	ID      int64 `json:"id" binding:"required,min=1"`
 // 	Balance int64 `json:"balance" binding:"required"`
 // }
-// 
+//
 // func (server *Server) updateAccount(ctx *gin.Context) {
 // 	var req updateAccountRequest
 

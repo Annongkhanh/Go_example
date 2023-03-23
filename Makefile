@@ -14,6 +14,8 @@ migratedown:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down
 migratedown1:
 	migrate -path db/migration -database "postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
+newmigration:
+	migrate create -ext sql -dir db/migration -seq $(name)
 pullimage:
 	docker pull postgres:12-alpine
 sqlc:

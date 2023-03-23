@@ -23,7 +23,7 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 	}
-	
+
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
 	arg := db.TransferTxParams{
@@ -43,13 +43,13 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 
 	fromAccount, valid := server.validAccount(req.FromAccountID, req.Currency, ctx)
 	if !valid {
-		return 
+		return
 	}
 	if authPayload.Username != fromAccount.Owner {
 		err := errors.New("from account is not belong to the authenticated user")
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 	}
-	_ , valid = server.validAccount(req.ToAccountID, req.Currency, ctx)
+	_, valid = server.validAccount(req.ToAccountID, req.Currency, ctx)
 
 	if !valid {
 		return
@@ -58,7 +58,7 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (server *Server) validAccount(accountID int64, currency string, ctx *gin.Context) (db.Account,bool) {
+func (server *Server) validAccount(accountID int64, currency string, ctx *gin.Context) (db.Account, bool) {
 	account, err := server.store.GetAccount(ctx, accountID)
 
 	if err != nil {
