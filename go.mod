@@ -1,8 +1,9 @@
-module github.com/Annongkhanh/Go_example
+module github.com/Annongkhanh/Simple_bank
 
 go 1.19
 
 require (
+	github.com/Annongkhanh/Go_example v0.0.0-20230323090350-a8ff8c9b964b
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
