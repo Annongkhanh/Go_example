@@ -17,7 +17,10 @@ require (
 	google.golang.org/protobuf v1.30.0
 )
 
-require github.com/golang/glog v1.0.0 // indirect
+require (
+	github.com/golang/glog v1.0.0 // indirect
+	github.com/rakyll/statik v0.1.7 // indirect
+)
 
 require (
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
