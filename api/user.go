@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	db "github.com/Annongkhanh/Go_example/db/sqlc"
-	"github.com/Annongkhanh/Go_example/util"
+	db "github.com/Annongkhanh/Simple_bank/db/sqlc"
+	"github.com/Annongkhanh/Simple_bank/util"
 	"github.com/google/uuid"
 	"github.com/lib/pq"
 
@@ -176,7 +176,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		RefreshToken:         refreshToken,
 		RefreshTokenExpireAt: refreshPayload.ExpiredAt,
 		User:                 newUserResponse(user),
- 	}
+	}
 
 	ctx.JSON(http.StatusOK, rsp)
 }

@@ -3,8 +3,9 @@ package db
 import (
 	"context"
 	"database/sql"
-	"github.com/Annongkhanh/Go_example/util"
 	"testing"
+
+	"github.com/Annongkhanh/Simple_bank/util"
 
 	"github.com/stretchr/testify/require"
 )

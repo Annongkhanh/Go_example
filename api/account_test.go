@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	mockdb "github.com/Annongkhanh/Go_example/db/mock"
-	db "github.com/Annongkhanh/Go_example/db/sqlc"
-	"github.com/Annongkhanh/Go_example/token"
-	"github.com/Annongkhanh/Go_example/util"
+	mockdb "github.com/Annongkhanh/Simple_bank/db/mock"
+	db "github.com/Annongkhanh/Simple_bank/db/sqlc"
+	"github.com/Annongkhanh/Simple_bank/token"
+	"github.com/Annongkhanh/Simple_bank/util"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
