@@ -10,6 +10,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.7
 	github.com/o1egl/paseto v1.0.0
+	github.com/rakyll/statik v0.1.7
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/crypto v0.7.0
@@ -17,10 +18,7 @@ require (
 	google.golang.org/protobuf v1.30.0
 )
 
-require (
-	github.com/golang/glog v1.0.0 // indirect
-	github.com/rakyll/statik v0.1.7 // indirect
-)
+require github.com/golang/glog v1.0.0 // indirect
 
 require (
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect

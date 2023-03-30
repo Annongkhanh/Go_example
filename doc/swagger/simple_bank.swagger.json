@@ -22,12 +22,34 @@
   "paths": {
     "/v1/create_user": {
       "post": {
+        "description": "Creates a new user account in the Simple Bank system.",
         "operationId": "SimpleBank_CreateUser",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "Returned when the user account is successfully created.",
             "schema": {
               "$ref": "#/definitions/pbCreateUserResponse"
+            }
+          },
+          "400": {
+            "description": "Returned when the request parameters are invalid.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "409": {
+            "description": "Returned when a user account with the given username or email already exists.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when an internal server error occurs while processing the request.",
+            "schema": {
+              "type": "string",
+              "format": "string"
             }
           },
           "default": {
@@ -54,12 +76,34 @@
     },
     "/v1/login_user": {
       "post": {
+        "description": "Authenticates a user and generates access and refresh tokens.",
         "operationId": "SimpleBank_LoginUser",
         "responses": {
           "200": {
-            "description": "A successful response.",
+            "description": "Returned when the user is successfully authenticated and tokens are generated.",
             "schema": {
               "$ref": "#/definitions/pbLoginUserResponse"
+            }
+          },
+          "400": {
+            "description": "Returned when the request parameters are invalid or the user is not found.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "401": {
+            "description": "Returned when the user's credentials are invalid or the user account is not verified.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when an internal server error occurs while processing the request.",
+            "schema": {
+              "type": "string",
+              "format": "string"
             }
           },
           "default": {

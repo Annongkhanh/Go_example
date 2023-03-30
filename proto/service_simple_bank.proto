@@ -26,11 +26,81 @@ service SimpleBank {
             post: "/v1/create_user"
             body: "*"
         };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Creates a new user account in the Simple Bank system.";
+            responses: {
+                key: "200";
+                value: {description: "Returned when the user account is successfully created."}
+            }
+            responses: {
+                key: "400";
+                value: {
+                    description: "Returned when the request parameters are invalid.";
+                    schema: {
+                        json_schema: {type: STRING}
+                    }
+                }
+            }
+            responses: {
+                key: "409";
+                value: {
+                    description: "Returned when a user account with the given username or email already exists.";
+                    schema: {
+                        json_schema: {type: STRING}
+                    }
+                }
+            }
+            responses: {
+                key: "500";
+                value: {
+                    description: "Returned when an internal server error occurs while processing the request.";
+                    schema: {
+                        json_schema: {type: STRING}
+                    }
+                }
+            }
+        };
     }
+    
     rpc LoginUser (LoginUserRequest) returns (LoginUserResponse){
         option (google.api.http) = {
             post: "/v1/login_user"
             body: "*"
         };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Authenticates a user and generates access and refresh tokens.";
+            responses: {
+                key: "200";
+                value: {description: "Returned when the user is successfully authenticated and tokens are generated."}
+            }
+            responses: {
+                key: "400";
+                value: {
+                    description: "Returned when the request parameters are invalid or the user is not found.";
+                    schema: {
+                        json_schema: {type: STRING}
+                    }
+                }
+            }
+            responses: {
+                key: "401";
+                value: {
+                    description: "Returned when the user's credentials are invalid or the user account is not verified.";
+                    schema: {
+                        json_schema: {type: STRING}
+                    }
+                }
+            }
+            responses: {
+                key: "500";
+                value: {
+                    description: "Returned when an internal server error occurs while processing the request.";
+                    schema: {
+                        json_schema: {type: STRING}
+                    }
+                }
+            }
+        };
     }
+    
 }
