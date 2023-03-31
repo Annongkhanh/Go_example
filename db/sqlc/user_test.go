@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"testing"
 
 	"github.com/Annongkhanh/Simple_bank/util"
@@ -100,3 +101,23 @@ func TestGetUser(t *testing.T) {
 // 		require.NotEmpty(t, account)
 // 	}
 // }
+
+func TestUpdateUser(t *testing.T) {
+	user1 := createRandomUser(t)
+	user2, err := testQueries.UpdateUser(context.Background(), UpdateUserParams{
+		Username: user1.Username,
+		Fullname: sql.NullString{
+			String: util.RandomOwner(),
+			Valid:  true,
+		},
+	})
+
+	require.NoError(t, err)
+	require.NotEmpty(t, user2)
+	require.Equal(t, user1.Username, user2.Username)
+	require.NotEqual(t, user1.Fullname, user2.Fullname)
+	require.Equal(t, user1.Email, user2.Email)
+	require.Equal(t, user1.PasswordChangedAt, user2.PasswordChangedAt)
+	require.Equal(t, user1.CreateAt, user2.CreateAt)
+
+}

@@ -12,3 +12,11 @@ INSERT INTO users (
   $1, $2, $3, $4
 ) RETURNING *;
 
+-- name: UpdateUser :one
+UPDATE users
+SET fullname = COALESCE(sqlc.narg(fullname), fullname),
+    hashed_password = COALESCE(sqlc.narg(hashed_password), hashed_password),
+    email = COALESCE(sqlc.narg(email), email)
+WHERE username = sqlc.arg(username)
+RETURNING *;
+

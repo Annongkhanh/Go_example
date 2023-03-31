@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	isValidFullname = regexp.MustCompile(`^[a-zA-Z\\s]+$`).MatchString
+	isValidFullname = regexp.MustCompile(`^[a-zA-Z\s]+$`).MatchString
 	isValidUsername = regexp.MustCompile(`^[a-z0-9_]+$`).MatchString
 )
 

@@ -13,6 +13,10 @@ import (
 	"github.com/Annongkhanh/Simple_bank/gapi"
 	"github.com/Annongkhanh/Simple_bank/pb"
 	"github.com/Annongkhanh/Simple_bank/util"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/golang-migrate/migrate/v4/source/github"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	_ "github.com/lib/pq"
 	"github.com/rakyll/statik/fs"
@@ -46,6 +50,8 @@ func runGrpcServer(config util.Config, store db.Store) {
 	if err != nil {
 		log.Fatal("Can not initialize server: ", err)
 	}
+
+	runDBMigration(config.MigrationURL, config.DBSource)
 
 	pb.RegisterSimpleBankServer(grpcServer, server)
 
@@ -132,4 +138,18 @@ func runGinServer(config util.Config, store db.Store) {
 	if err != nil {
 		log.Fatal("Can not start server: ", err)
 	}
+}
+
+// Run DB migration
+func runDBMigration(migrationURL string, dbSource string) {
+	migration, err := migrate.New(migrationURL, dbSource)
+	if err != nil {
+		log.Fatal("Can not create new migrate instance: ", err)
+	}
+	if err := migration.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal("Can not migrate database: ", err)
+	}
+
+	log.Println("Success to migrate database")
+
 }
