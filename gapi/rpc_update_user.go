@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	db "github.com/Annongkhanh/Simple_bank/db/sqlc"
-	"github.com/Annongkhanh/Simple_bank/pb"
+	pb "github.com/Annongkhanh/Simple_bank/pb"
 	"github.com/Annongkhanh/Simple_bank/util"
 	"github.com/Annongkhanh/Simple_bank/val"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"

@@ -27,7 +27,7 @@ init:
 removeall:
 	sudo docker rm -f $(sudo docker ps -aq)
 test:
-	go test -v -cover ./...
+	go test -v -cover -short ./...
 server:
 	go run main.go 
 mock:

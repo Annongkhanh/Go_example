@@ -4,16 +4,17 @@ import (
 	"context"
 
 	db "github.com/Annongkhanh/Simple_bank/db/sqlc"
+	"github.com/Annongkhanh/Simple_bank/mail"
 	"github.com/hibiken/asynq"
 	"github.com/rs/zerolog/log"
-
 )
 
-const(
+const (
 	QueueCritical = "critical"
-	QueueDefault = "default"
-	QueueLow = "low"
+	QueueDefault  = "default"
+	QueueLow      = "low"
 )
+
 type TaskProcessor interface {
 	Start() error
 	ProcessTaskSendVerifyEmail(
@@ -25,9 +26,10 @@ type TaskProcessor interface {
 type RedisTaskProcessor struct {
 	server *asynq.Server
 	store  db.Store
+	mailer mail.EmailSender
 }
 
-func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) TaskProcessor {
+func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store, mailer mail.EmailSender) TaskProcessor {
 	server := asynq.NewServer(redisOpt, asynq.Config{
 		Queues: map[string]int{
 			QueueCritical: 6,
@@ -35,18 +37,19 @@ func NewRedisTaskProcessor(redisOpt asynq.RedisClientOpt, store db.Store) TaskPr
 			QueueLow:      1,
 		},
 		ErrorHandler: asynq.ErrorHandlerFunc(
-			func(ctx context.Context, task *asynq.Task, err error){
+			func(ctx context.Context, task *asynq.Task, err error) {
 				log.Error().
-				Err(err).
-				Str("type", task.Type()).
-				Bytes("payload", task.Payload()).
-				Msg("process task failed")
+					Err(err).
+					Str("type", task.Type()).
+					Bytes("payload", task.Payload()).
+					Msg("process task failed")
 			}),
 		Logger: NewLogger(),
 	})
 	return &RedisTaskProcessor{
 		server: server,
 		store:  store,
+		mailer: mailer,
 	}
 }
 
